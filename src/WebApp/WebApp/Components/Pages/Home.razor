@@ -1,18 +1,96 @@
-﻿@page "/"
+@page "/"
+@using WebApp.Components.Shared
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Victor Broering</PageTitle>
 
+<ProfileHero />
+<ExperienceTimeline Items="Experiences" />
+<ProjectsGrid Items="Projects" />
 
-<h1 class="text-red-300">Hello, world!!!</h1>
+@code {
+    private static readonly List<ExperienceTimeline.ExperienceItem> Experiences =
+    [
+        new()
+        {
+            Period = "Set/2025 – Presente",
+            Role = "Desenvolvedor Backend",
+            Company = "Tributo Devido",
+            Url = "https://tributodevido.com.br/",
+            Descriptions =
+            [
+                "Na Tributo Devido, eu atuo como Desenvolvedor Back-end focado em criação e manutenção de micro serviços para o tratamento de processos fiscais complexos, conformidade fiscal e otimização de performance para grandes volumes de dados tributários.",
+                "Implemento arquiteturas orientadas a eventos (Event-Driven), utilizando RabbitMQ para o consumo e gestão assíncrona de eventos de teses tributárias, garantindo a resiliência do pipeline em pods S3 na AWS.",
+                "Atuo em Data Engineering, o que inclui a conversão de dataset complexos (como o SPED Tributário) para o formato colunar Parquet, com o objetivo de otimizar a performance em ferramentas de análise e no Athena, da AWS.",
+                "Utilização da biblioteca Pandas para desenvolver lógicas de negócio e realizar transformações de dados, garantindo a normalização precisa para gerar alterações de débitos e créditos. Em 2025, esta abordagem resultou na recuperação de quase 2 bilhões em créditos.",
+                "Aplico minha experiência anterior em Direito Tributário no diálogo com especialistas da área e com a equipe de automação, auxiliando o time de desenvolvimento na compreensão das regras de negócio fiscal e da engenharia de dados."
+            ],
+            Technologies = ["Python", "Pandas", "AWS", "RabbitMQ", "Microservices", "Event-Driven", "Data Engineering", "Parquet", "Athena"]
+        },
+        new()
+        {
+            Period = "Nov/2020 – Jul/2025",
+            Role = "Desenvolvedor Full Stack e Advogado",
+            Company = "Victor Broering Advocacia",
+            Url = "https://www.victorbroering.adv.br",
+            Descriptions =
+            [
+                "Liderei a iniciativa de desenvolvimento interno, criando um microssistema de web scraping que gerou uma economia de R$11.000 anuais em licenças de software jurídico.",
+                "Desenvolvi e implantei uma solução full stack em .NET que automatizou 100% do processo de geração de contratos, eliminando tarefas manuais e permitindo a delegação segura da precificação.",
+                "Integrei sistemas legados que não aceitavam API utilizando Selenium e SQL Server para garantir a consistência e a centralização dos dados da operação."
+            ],
+            Technologies = [".NET", "C#", "ASP.NET", "Blazor", "Selenium", "SQL Server", "Python"]
+        },
+        new()
+        {
+            Period = "01/2020 – 11/2020",
+            Role = "Estagiário de Direito",
+            Company = "Henrique Franceschetto Advocacia",
+            Url = "https://www.henriquef.com.br",
+            Descriptions =
+            [
+                "Otimizei processos internos da equipe ao assumir responsabilidades-chave em um ambiente de metodologia ágil.",
+                "Aumentei a velocidade e precisão na identificação de créditos tributários ao automatizar a análise de bi-tributação com Power BI."
+            ],
+            Technologies = ["Power BI", "Metodologia Ágil"]
+        }
+    ];
 
-<div class="flex bg-blue-500">
-    <div class="w-14 flex-none ...">01</div>
-    <div class="w-64 flex-1 ...">02</div>
-    <div class="w-32 flex-1 ...">03</div>
-</div>
-
-
-<h1 class="text-3xl font-bold underline">
-    Hello world!
-</h1>
-Welcome to your new app.
+    private static readonly List<ProjectsGrid.ProjectItem> Projects =
+    [
+        new()
+        {
+            Name = "FastAPI Backend Template",
+            Link = "https://github.com/broeringvictor/fastapi",
+            Description = "Estudo e modelo reutilizável de backend utilizando FastAPI, focado em arquitetura, Clean Code e padrões de projeto em Python. Comparação direta com tecnologias .NET para compreensão de assincronismo e ORMs (SQLAlchemy vs Entity Framework). Implementação de autenticação JWT segura (HttpOnly, CSRF), arquitetura modular e Value Objects. Suíte completa de testes com Pytest, Factory Boy e Freezegun.",
+            Technologies = ["Python", "FastAPI", "SQLAlchemy", "JWT", "Pytest", "PostgreSQL"]
+        },
+        new()
+        {
+            Name = "PxG Auto Revive Bot",
+            Link = "https://github.com/broeringvictor/auto-revive-bot",
+            Description = "Combinei a API do Windows (user32.dll) e visão computacional (OpenCVSharp) para criar uma automação inteligente.",
+            Technologies = ["C#", ".NET", "Windows Forms", "P/Invoke", "OpenCVSharp"]
+        },
+        new()
+        {
+            Name = "Validador Estatístico de Testes A/B",
+            Link = "https://github.com/broeringvictor/ab_test_calculator",
+            Description = "Ferramenta de análise estatística para testes A/B que abstrai a complexidade de métricas para usuários não-técnicos. Estando hoje na rotina de uma equipe de marketing em uma empresa com mais de 200 funcionários.",
+            Technologies = ["Python", "Streamlit", "Pandas", "Heroku", "GitHub Actions"]
+        },
+        new()
+        {
+            Name = "Sistema de Gestão Processual Jurídica",
+            Link = "https://github.com/broeringvictor/gubernare-public",
+            Description = "Prototipei a conversão de uma aplicação interna para uma arquitetura de microsserviços open-source, orquestrada com .NET Aspire com Docker, com um sistema de segurança com JWT, hash com salt (PBKDF2) e criptografia AES-256.",
+            Technologies = [".NET Aspire", "ASP.NET Core", "Angular", "Python", "Docker", "Redis"]
+        },
+        new()
+        {
+            Name = "Portfólio pessoal",
+            Link = "https://github.com/broeringvictor/portfolio",
+            Description = "Portfólio pessoal desenvolvido com Angular e Tailwind CSS. Apresenta informações profissionais, experiências, projetos e um blog integrado com a API do Hashnode.",
+            Technologies = ["Angular", "Tailwind", "CI/CD", "GitHub Actions"]
+        }
+    ];
+}

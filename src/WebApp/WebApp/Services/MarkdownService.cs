@@ -91,7 +91,7 @@ public class MarkdownService
         var renderer = new Markdig.Renderers.HtmlRenderer(writer);
         _pipeline.Setup(renderer);
         renderer.Render(markDoc);
-        post.HtmlContent = writer.ToString();
+        post.HtmlContent = writer.ToString().Replace("<img ", "<img loading=\"lazy\" ");
 
         return post;
     }

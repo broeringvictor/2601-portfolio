@@ -20,12 +20,14 @@
 
         function syncDarkModeIcons() {
             var isDark = document.documentElement.classList.contains('dark');
-            var sun = document.getElementById('icon-sun');
-            var moon = document.getElementById('icon-moon');
-            if (sun && moon) {
-                sun.classList.toggle('hidden', !isDark);
-                moon.classList.toggle('hidden', isDark);
-            }
+            ['', '-mobile'].forEach(function(suffix) {
+                var sun = document.getElementById('icon-sun' + suffix);
+                var moon = document.getElementById('icon-moon' + suffix);
+                if (sun && moon) {
+                    sun.classList.toggle('hidden', !isDark);
+                    moon.classList.toggle('hidden', isDark);
+                }
+            });
         }
 
         function toggleDarkMode() {
@@ -35,8 +37,27 @@
             syncDarkModeIcons();
         }
 
-        // Blazor enhanced navigation replaces the DOM but keeps <html>.
-        // Re-apply dark class from localStorage after every enhanced page update.
+        function toggleMobileMenu() {
+            var menu = document.getElementById('mobile-menu');
+            var hamburger = document.getElementById('hamburger-icon');
+            var close = document.getElementById('close-icon');
+            if (menu && hamburger && close) {
+                var isOpen = !menu.classList.contains('hidden');
+                menu.classList.toggle('hidden');
+                hamburger.classList.toggle('hidden', !isOpen);
+                close.classList.toggle('hidden', isOpen);
+            }
+        }
+
+        function closeMobileMenu() {
+            var menu = document.getElementById('mobile-menu');
+            var hamburger = document.getElementById('hamburger-icon');
+            var close = document.getElementById('close-icon');
+            if (menu) menu.classList.add('hidden');
+            if (hamburger) hamburger.classList.remove('hidden');
+            if (close) close.classList.add('hidden');
+        }
+
         function applyTheme() {
             var theme = localStorage.getItem('theme');
             if (theme === 'dark') {
@@ -45,11 +66,11 @@
                 document.documentElement.classList.remove('dark');
             }
             syncDarkModeIcons();
+            closeMobileMenu();
         }
 
         document.addEventListener('DOMContentLoaded', function() {
             syncDarkModeIcons();
-            // Blazor fires this after every enhanced navigation completes
             Blazor.addEventListener('enhancedload', applyTheme);
         });
     </script>

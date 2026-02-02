@@ -6,7 +6,10 @@
                border-b border-slate-200 dark:border-slate-800">
     <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
-            <a href="" class="text-xl font-bold text-primary-600">Portfolio</a>
+            <a href="" class="flex items-baseline gap-1.5">
+                <span class="text-base font-semibold text-slate-950 dark:text-white">Victor Broering</span>
+                <span class="text-sm font-medium text-slate-400 dark:text-slate-500">dev.</span>
+            </a>
 
             @* Desktop menu *@
             <div class="hidden md:flex items-center gap-8">
@@ -19,6 +22,11 @@
                          class="text-sm font-medium text-slate-600 hover:text-primary-600
                                 dark:text-slate-400 dark:hover:text-primary-400 transition-colors">
                     Counter
+                </NavLink>
+                <NavLink href="blog"
+                         class="text-sm font-medium text-slate-600 hover:text-primary-600
+                                dark:text-slate-400 dark:hover:text-primary-400 transition-colors">
+                    Blog
                 </NavLink>
                 <NavLink href="auth"
                          class="text-sm font-medium text-slate-600 hover:text-primary-600
@@ -45,11 +53,6 @@
                         </form>
                     </Authorized>
                     <NotAuthorized>
-                        <NavLink href="Account/Register"
-                                 class="text-sm font-medium text-slate-600 hover:text-primary-600
-                                        dark:text-slate-400 dark:hover:text-primary-400 transition-colors">
-                            Register
-                        </NavLink>
                         <NavLink href="Account/Login"
                                  class="text-sm font-medium text-slate-600 hover:text-primary-600
                                         dark:text-slate-400 dark:hover:text-primary-400 transition-colors">
@@ -107,6 +110,18 @@
                                 dark:hover:bg-slate-800 transition-colors">
                     Counter
                 </NavLink>
+                <NavLink href="experiencia"
+                         class="block px-3 py-2 rounded-md text-sm font-medium
+                                text-slate-700 hover:bg-slate-100 dark:text-slate-300
+                                dark:hover:bg-slate-800 transition-colors">
+                    Experiência
+                </NavLink>
+                <NavLink href="blog"
+                         class="block px-3 py-2 rounded-md text-sm font-medium
+                                text-slate-700 hover:bg-slate-100 dark:text-slate-300
+                                dark:hover:bg-slate-800 transition-colors">
+                    Blog
+                </NavLink>
                 <NavLink href="auth"
                          class="block px-3 py-2 rounded-md text-sm font-medium
                                 text-slate-700 hover:bg-slate-100 dark:text-slate-300
@@ -134,12 +149,6 @@
                         </form>
                     </Authorized>
                     <NotAuthorized>
-                        <NavLink href="Account/Register"
-                                 class="block px-3 py-2 rounded-md text-sm font-medium
-                                        text-slate-700 hover:bg-slate-100 dark:text-slate-300
-                                        dark:hover:bg-slate-800 transition-colors">
-                            Register
-                        </NavLink>
                         <NavLink href="Account/Login"
                                  class="block px-3 py-2 rounded-md text-sm font-medium
                                         text-primary-600 hover:bg-primary-50 dark:text-primary-400

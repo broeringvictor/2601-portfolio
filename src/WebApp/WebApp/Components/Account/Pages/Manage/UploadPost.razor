@@ -1,0 +1,96 @@
+@page "/Account/Manage/UploadPost"
+
+@using System.Text.Json
+@using System.Text.RegularExpressions
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using WebApp.Data
+@using WebApp.Entities
+
+@attribute [Authorize]
+
+@inject IWebHostEnvironment Env
+@inject IdentityRedirectManager RedirectManager
+
+<PageTitle>Upload Post</PageTitle>
+
+<h3 class="mb-4 text-xl font-bold text-gray-900 dark:text-slate-100">Upload Post</h3>
+<StatusMessage />
+
+<div class="max-w-md">
+    <form method="post" enctype="multipart/form-data" @formname="upload-post" @onsubmit="OnSubmitAsync">
+        <AntiforgeryToken />
+        <div class="mb-4">
+            <label for="file" class="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">Markdown file (.md)</label>
+            <input type="file" name="file" id="file" accept=".md"
+                   class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" />
+        </div>
+        <button type="submit"
+                class="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900">
+            Upload
+        </button>
+    </form>
+</div>
+
+@code {
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    private async Task OnSubmitAsync()
+    {
+        var form = await HttpContext.Request.ReadFormAsync();
+        var file = form.Files["file"];
+
+        if (file is null || file.Length == 0)
+        {
+            RedirectManager.RedirectToCurrentPageWithStatus("Error: No file selected.", HttpContext);
+            return;
+        }
+
+        if (Path.GetExtension(file.FileName) != ".md")
+        {
+            RedirectManager.RedirectToCurrentPageWithStatus("Error: Only .md files are allowed.", HttpContext);
+            return;
+        }
+
+        using var reader = new StreamReader(file.OpenReadStream());
+        var content = await reader.ReadToEndAsync();
+
+        var match = Regex.Match(content, @"```json\s+meta\s*\n([\s\S]*?)```");
+        if (!match.Success)
+        {
+            RedirectManager.RedirectToCurrentPageWithStatus("Error: The file must contain a ```json meta``` block with post metadata.", HttpContext);
+            return;
+        }
+
+        var jsonContent = match.Groups[1].Value.Trim();
+        BlogPost? meta;
+        try
+        {
+            meta = JsonSerializer.Deserialize<BlogPost>(jsonContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        }
+        catch
+        {
+            RedirectManager.RedirectToCurrentPageWithStatus("Error: The json meta block contains invalid JSON.", HttpContext);
+            return;
+        }
+
+        var missing = new List<string>();
+        if (string.IsNullOrWhiteSpace(meta?.Title)) missing.Add("title");
+        if (string.IsNullOrWhiteSpace(meta?.Slug)) missing.Add("slug");
+        if (string.IsNullOrWhiteSpace(meta?.Author)) missing.Add("author");
+        if (string.IsNullOrWhiteSpace(meta?.Excerpt)) missing.Add("excerpt");
+        if (meta?.PublishedAt == default) missing.Add("publishedAt");
+
+        if (missing.Count > 0)
+        {
+            RedirectManager.RedirectToCurrentPageWithStatus($"Error: Missing required fields in json meta: {string.Join(", ", missing)}.", HttpContext);
+            return;
+        }
+
+        var savePath = Path.Combine(Env.WebRootPath, "Asserts", "Markdown", file.FileName);
+        await File.WriteAllTextAsync(savePath, content);
+
+        RedirectManager.RedirectToCurrentPageWithStatus($"File '{file.FileName}' uploaded successfully.", HttpContext);
+    }
+}

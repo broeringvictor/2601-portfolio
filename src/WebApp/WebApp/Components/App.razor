@@ -18,10 +18,8 @@
             }
         })();
 
-        function toggleDarkMode() {
-            var isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            // Update icon
+        function syncDarkModeIcons() {
+            var isDark = document.documentElement.classList.contains('dark');
             var sun = document.getElementById('icon-sun');
             var moon = document.getElementById('icon-moon');
             if (sun && moon) {
@@ -29,6 +27,31 @@
                 moon.classList.toggle('hidden', isDark);
             }
         }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            var isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            syncDarkModeIcons();
+        }
+
+        // Blazor enhanced navigation replaces the DOM but keeps <html>.
+        // Re-apply dark class from localStorage after every enhanced page update.
+        function applyTheme() {
+            var theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else if (theme === 'light') {
+                document.documentElement.classList.remove('dark');
+            }
+            syncDarkModeIcons();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            syncDarkModeIcons();
+            // Blazor fires this after every enhanced navigation completes
+            Blazor.addEventListener('enhancedload', applyTheme);
+        });
     </script>
 
     <ImportMap />
@@ -40,7 +63,6 @@
     <Routes />
     <ReconnectModal />
     <script src="@Assets["_framework/blazor.web.js"]"></script>
-    <script src="@Assets["Components/Account/Shared/PasskeySubmit.razor.js"]" type="module"></script>
 </body>
 
 </html>

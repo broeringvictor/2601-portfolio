@@ -14,27 +14,27 @@
 <PageTitle>Log in</PageTitle>
 
 <div class="flex min-h-[60vh] items-center justify-center">
-    <div class="w-full max-w-md rounded-lg bg-white p-8 shadow-md">
-        <h1 class="mb-6 text-center text-2xl font-bold text-gray-900">Log in</h1>
+    <div class="w-full max-w-md rounded-lg bg-white p-8 shadow-md dark:bg-slate-900 dark:shadow-slate-800/50">
+        <h1 class="mb-6 text-center text-2xl font-bold text-gray-900 dark:text-slate-100">Log in</h1>
         <StatusMessage Message="@errorMessage" />
         <EditForm EditContext="editContext" method="post" OnSubmit="LoginUser" FormName="login">
             <DataAnnotationsValidator />
-            <ValidationSummary class="mb-4 text-sm text-red-600" role="alert" />
+            <ValidationSummary class="mb-4 text-sm text-red-600 dark:text-red-400" role="alert" />
             <div class="mb-4">
-                <label for="Input.Email" class="mb-1 block text-sm font-medium text-gray-700">Email</label>
-                <InputText @bind-Value="Input.Email" id="Input.Email" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <ValidationMessage For="() => Input.Email" class="mt-1 text-sm text-red-600" />
+                <label for="Input.Email" class="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">Email</label>
+                <InputText @bind-Value="Input.Email" id="Input.Email" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-400" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <ValidationMessage For="() => Input.Email" class="mt-1 text-sm text-red-600 dark:text-red-400" />
             </div>
             <div class="mb-4">
-                <label for="Input.Password" class="mb-1 block text-sm font-medium text-gray-700">Password</label>
-                <InputText type="password" @bind-Value="Input.Password" id="Input.Password" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" autocomplete="current-password" aria-required="true" placeholder="password" />
-                <ValidationMessage For="() => Input.Password" class="mt-1 text-sm text-red-600" />
+                <label for="Input.Password" class="mb-1 block text-sm font-medium text-gray-700 dark:text-slate-300">Password</label>
+                <InputText type="password" @bind-Value="Input.Password" id="Input.Password" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-400" autocomplete="current-password" aria-required="true" placeholder="password" />
+                <ValidationMessage For="() => Input.Password" class="mt-1 text-sm text-red-600 dark:text-red-400" />
             </div>
             <div class="mb-6 flex items-center">
-                <InputCheckbox @bind-Value="Input.RememberMe" id="Input.RememberMe" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                <label for="Input.RememberMe" class="ml-2 text-sm text-gray-700">Remember me</label>
+                <InputCheckbox @bind-Value="Input.RememberMe" id="Input.RememberMe" class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800" />
+                <label for="Input.RememberMe" class="ml-2 text-sm text-gray-700 dark:text-slate-300">Remember me</label>
             </div>
-            <button type="submit" class="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+            <button type="submit" class="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900">
                 Log in
             </button>
         </EditForm>

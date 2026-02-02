@@ -1,0 +1,61 @@
+@* Reusable SSR-only grid component for projects *@
+
+<section class="mx-auto max-w-3xl px-4 py-16">
+    <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+        @Title
+    </h2>
+    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">@Subtitle</p>
+
+    <ul class="mt-10 grid gap-6 sm:grid-cols-2">
+        @foreach (var project in Items)
+        {
+            <li>
+                <a href="@project.Link"
+                   target="_blank"
+                   rel="noreferrer noopener"
+                   class="group flex h-full flex-col rounded-lg border border-slate-200 bg-white p-5 transition-all
+                          hover:border-primary-300 hover:shadow-md
+                          dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-primary-700 dark:hover:shadow-primary-900/20">
+
+                    <h3 class="text-base font-semibold text-slate-900 group-hover:text-primary-600 dark:text-slate-100 dark:group-hover:text-primary-400 transition-colors">
+                        @project.Name
+                        <span class="ml-1 inline-block text-slate-400 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 dark:text-slate-500">&nearr;</span>
+                    </h3>
+
+                    <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                        @project.Description
+                    </p>
+
+                    <div class="mt-4 flex flex-wrap gap-1.5">
+                        @foreach (var tech in project.Technologies)
+                        {
+                            <span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-medium text-slate-600
+                                         dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-300">
+                                @tech
+                            </span>
+                        }
+                    </div>
+                </a>
+            </li>
+        }
+    </ul>
+</section>
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Projetos";
+
+    [Parameter]
+    public string Subtitle { get; set; } = "Projetos selecionados.";
+
+    [Parameter]
+    public List<ProjectItem> Items { get; set; } = [];
+
+    public sealed class ProjectItem
+    {
+        public string Name { get; set; } = "";
+        public string Link { get; set; } = "";
+        public string Description { get; set; } = "";
+        public List<string> Technologies { get; set; } = [];
+    }
+}

@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: '20'
 
-      - run: npx --yes @tailwindcss/cli@latest -i src/WebApp/WebApp/Styles/input.css -o src/WebApp/WebApp/wwwroot/tailwind.css --minify
+      - run: npx tailwindcss -i src/WebApp/WebApp/Styles/input.css -o src/WebApp/WebApp/wwwroot/tailwind.css --minify
 
       - uses: actions/setup-dotnet@v4
         with:

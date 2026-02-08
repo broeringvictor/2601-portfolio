@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-WebApp-fb513125-79e5-430d-b2b5-2c8c791c6bef</UserSecretsId>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,6 +29,12 @@
     <_ContentIncludedByDefault Remove="Components\Pages\Home.razor" />
     <_ContentIncludedByDefault Remove="Components\Pages\NotFound.razor" />
     <_ContentIncludedByDefault Remove="Components\Pages\Weather.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
   </ItemGroup>
 
 </Project>

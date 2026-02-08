@@ -1,0 +1,9 @@
+services:
+  webapp:
+    image: ghcr.io/${GITHUB_REPOSITORY:-local/portfolio}:latest
+    build:
+      context: .
+      dockerfile: src/WebApp/WebApp/Dockerfile
+    ports:
+      - "8080:8080"
+

@@ -59,10 +59,11 @@
         using var reader = new StreamReader(file.OpenReadStream());
         var content = await reader.ReadToEndAsync();
 
-        var match = Regex.Match(content, @"```json\s+meta\s*\n([\s\S]*?)```");
-        if (!match.Success)
+        var hasJsonMeta = Regex.IsMatch(content, @"```json\s+meta\s*\n([\s\S]*?)```");
+        var hasYamlMeta = Regex.IsMatch(content, @"^---\s*\r?\n[\s\S]*?\r?\n---");
+        if (!hasJsonMeta && !hasYamlMeta)
         {
-            RedirectManager.RedirectToCurrentPageWithStatus("Error: The file must contain a ```json meta``` block with post metadata.", HttpContext);
+            RedirectManager.RedirectToCurrentPageWithStatus("Error: The file must contain a ```json meta``` block or YAML front matter (---) with post metadata.", HttpContext);
             return;
         }
 

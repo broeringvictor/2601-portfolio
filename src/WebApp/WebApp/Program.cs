@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,11 @@ builder.Services.AddRazorComponents()
     .AddAuthenticationStateSerialization();
 
 builder.Services.AddCascadingAuthenticationState();
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
 
 if (!builder.Environment.IsDevelopment())
 {
@@ -69,6 +75,7 @@ else
     app.UseHsts();
 }
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
+app.UseForwardedHeaders();
 app.UseHttpsRedirection();
 
 app.UseAntiforgery();

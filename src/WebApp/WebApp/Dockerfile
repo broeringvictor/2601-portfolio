@@ -35,6 +35,9 @@ ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./WebApp.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
+USER root
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN mkdir -p /home/data && chown -R $APP_UID:$APP_UID /home/data && chmod 755 /home/data
+USER $APP_UID
 ENTRYPOINT ["dotnet", "WebApp.dll"]

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,13 @@ builder.Services.AddRazorComponents()
     .AddAuthenticationStateSerialization();
 
 builder.Services.AddCascadingAuthenticationState();
+
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDataProtection()
+        .PersistKeysToFileSystem(new DirectoryInfo("/home/data/keys"));
+}
+
 builder.Services.AddScoped<MarkdownService>();
 builder.Services.AddScoped<ImageSevice>();
 builder.Services.AddScoped<IdentityRedirectManager>();

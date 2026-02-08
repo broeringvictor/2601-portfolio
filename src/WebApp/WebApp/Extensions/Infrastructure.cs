@@ -15,8 +15,17 @@ public static class InfrastructureExtensions
         if (connStr?.StartsWith("Data Source=") == true)
         {
             var dir = Path.GetDirectoryName(connStr.Replace("Data Source=", ""));
-            if (!string.IsNullOrEmpty(dir))
-                Directory.CreateDirectory(dir);
+            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+            {
+                try 
+                {
+                    Directory.CreateDirectory(dir);
+                }
+                catch (Exception ex)
+                {
+                    app.Logger.LogError(ex, "Failed to create directory {Dir}", dir);
+                }
+            }
         }
 
         db.Database.Migrate();

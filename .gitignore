@@ -485,3 +485,9 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Windows NUL device artifact
+nul
+
+# Azure publish settings
+*.PublishSettings

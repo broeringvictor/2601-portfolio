@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\Asserts\Images\" />
     <Folder Include="wwwroot\lib\" />
   </ItemGroup>
 

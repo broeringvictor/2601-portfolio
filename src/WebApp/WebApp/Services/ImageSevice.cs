@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -7,13 +7,30 @@ namespace WebApp.Services;
 
 public class ImageSevice
 {
-    private readonly IWebHostEnvironment _env;
-    private const string ImageDirectory = "Asserts/Images";
+    private readonly string _imageDirectory;
 
-    // Construtor que injeta IWebHostEnvironment
     public ImageSevice(IWebHostEnvironment env)
     {
-        _env = env ?? throw new ArgumentNullException(nameof(env));
+        if (env == null) throw new ArgumentNullException(nameof(env));
+
+        if (env.EnvironmentName == "Production")
+        {
+            _imageDirectory = "/home/data/uploads/images";
+        }
+        else
+        {
+            _imageDirectory = Path.Combine(env.WebRootPath ?? string.Empty, "Asserts", "Images");
+        }
+
+        if (!Directory.Exists(_imageDirectory))
+        {
+            Directory.CreateDirectory(_imageDirectory);
+        }
+    }
+
+    public string GetImagePath(string fileName)
+    {
+        return Path.Combine(_imageDirectory, fileName);
     }
 
     public async Task UploadImageAsync(Stream imageStream, string fileName)
@@ -21,19 +38,13 @@ public class ImageSevice
         if (imageStream == null) throw new ArgumentNullException(nameof(imageStream));
         if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentException("fileName não pode ser vazio.", nameof(fileName));
 
-        // Define o caminho completo para a pasta de imagens
-        var postsPath = Path.Combine(_env.WebRootPath ?? string.Empty, ImageDirectory);
-
-        // Se o diretório não existir, cria-o
-        if (!Directory.Exists(postsPath))
+        if (!Directory.Exists(_imageDirectory))
         {
-            Directory.CreateDirectory(postsPath);
+            Directory.CreateDirectory(_imageDirectory);
         }
 
-        // Define o caminho completo do arquivo incluindo o nome
-        var filePath = Path.Combine(postsPath, fileName);
+        var filePath = Path.Combine(_imageDirectory, fileName);
 
-        // Copia o fluxo da imagem para o arquivo físico de forma assíncrona
         using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
         {
             await imageStream.CopyToAsync(fileStream).ConfigureAwait(false);

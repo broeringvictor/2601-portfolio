@@ -4,12 +4,15 @@
 @using System.Text.RegularExpressions
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
 @using WebApp.Data
 @using WebApp.Entities
+@using WebApp.Services
 
 @attribute [Authorize]
 
-@inject IWebHostEnvironment Env
+@inject ApplicationDbContext Db
+@inject MarkdownService MarkdownService
 @inject IdentityRedirectManager RedirectManager
 
 <PageTitle>Upload Post</PageTitle>
@@ -63,11 +66,10 @@
             return;
         }
 
-        var jsonContent = match.Groups[1].Value.Trim();
-        BlogPost? meta;
+        BlogPost parsed;
         try
         {
-            meta = JsonSerializer.Deserialize<BlogPost>(jsonContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            parsed = MarkdownService.ParsePost(content);
         }
         catch
         {
@@ -76,11 +78,11 @@
         }
 
         var missing = new List<string>();
-        if (string.IsNullOrWhiteSpace(meta?.Title)) missing.Add("title");
-        if (string.IsNullOrWhiteSpace(meta?.Slug)) missing.Add("slug");
-        if (string.IsNullOrWhiteSpace(meta?.Author)) missing.Add("author");
-        if (string.IsNullOrWhiteSpace(meta?.Excerpt)) missing.Add("excerpt");
-        if (meta?.PublishedAt == default) missing.Add("publishedAt");
+        if (string.IsNullOrWhiteSpace(parsed.Title)) missing.Add("title");
+        if (string.IsNullOrWhiteSpace(parsed.Slug)) missing.Add("slug");
+        if (string.IsNullOrWhiteSpace(parsed.Author)) missing.Add("author");
+        if (string.IsNullOrWhiteSpace(parsed.Excerpt)) missing.Add("excerpt");
+        if (parsed.PublishedAt == default) missing.Add("publishedAt");
 
         if (missing.Count > 0)
         {
@@ -88,9 +90,28 @@
             return;
         }
 
-        var savePath = Path.Combine(Env.WebRootPath, "Asserts", "Markdown", file.FileName);
-        await File.WriteAllTextAsync(savePath, content);
+        var existing = await Db.BlogPosts.FirstOrDefaultAsync(p => p.Slug == parsed.Slug);
+        if (existing is not null)
+        {
+            existing.Title = parsed.Title;
+            existing.Lead = parsed.Lead;
+            existing.IsPublished = parsed.IsPublished;
+            existing.PublishedAt = parsed.PublishedAt;
+            existing.Author = parsed.Author;
+            existing.Excerpt = parsed.Excerpt;
+            existing.OpenGraphImage = parsed.OpenGraphImage;
+            existing.TagsJson = parsed.TagsJson;
+            existing.MarkdownContent = content;
+        }
+        else
+        {
+            parsed.MarkdownContent = content;
+            Db.BlogPosts.Add(parsed);
+        }
 
-        RedirectManager.RedirectToCurrentPageWithStatus($"File '{file.FileName}' uploaded successfully.", HttpContext);
+        await Db.SaveChangesAsync();
+
+        var action = existing is not null ? "updated" : "uploaded";
+        RedirectManager.RedirectToCurrentPageWithStatus($"Post '{parsed.Title}' {action} successfully.", HttpContext);
     }
 }

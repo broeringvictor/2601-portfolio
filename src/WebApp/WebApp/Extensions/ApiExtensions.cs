@@ -1,5 +1,7 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
+using WebApp.Data;
 using WebApp.Entities;
 using WebApp.Services;
 
@@ -9,7 +11,7 @@ public static class ApiExtensions
 {
     public static WebApplication MapApi(this WebApplication app)
     {
-        app.MapPost("/api/blog/upload", async (IFormFile file, IWebHostEnvironment env) =>
+        app.MapPost("/api/blog/upload", async (IFormFile file, ApplicationDbContext db, MarkdownService markdownService) =>
         {
             if (Path.GetExtension(file.FileName) != ".md")
                 return Results.BadRequest("Only .md files are allowed.");
@@ -21,18 +23,17 @@ public static class ApiExtensions
             if (!match.Success)
                 return Results.BadRequest("The file must contain a ```json meta``` block with post metadata.");
 
+            BlogPost parsed;
             try
             {
-                var meta = JsonSerializer.Deserialize<BlogPost>(
-                    match.Groups[1].Value.Trim(),
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                parsed = markdownService.ParsePost(content);
 
                 var missing = new List<string>();
-                if (string.IsNullOrWhiteSpace(meta?.Title)) missing.Add("title");
-                if (string.IsNullOrWhiteSpace(meta?.Slug)) missing.Add("slug");
-                if (string.IsNullOrWhiteSpace(meta?.Author)) missing.Add("author");
-                if (string.IsNullOrWhiteSpace(meta?.Excerpt)) missing.Add("excerpt");
-                if (meta?.PublishedAt == default) missing.Add("publishedAt");
+                if (string.IsNullOrWhiteSpace(parsed.Title)) missing.Add("title");
+                if (string.IsNullOrWhiteSpace(parsed.Slug)) missing.Add("slug");
+                if (string.IsNullOrWhiteSpace(parsed.Author)) missing.Add("author");
+                if (string.IsNullOrWhiteSpace(parsed.Excerpt)) missing.Add("excerpt");
+                if (parsed.PublishedAt == default) missing.Add("publishedAt");
 
                 if (missing.Count > 0)
                     return Results.BadRequest($"Missing required fields in json meta: {string.Join(", ", missing)}.");
@@ -42,8 +43,26 @@ public static class ApiExtensions
                 return Results.BadRequest("The json meta block contains invalid JSON.");
             }
 
-            var savePath = Path.Combine(env.WebRootPath, "Asserts", "Markdown", file.FileName);
-            await File.WriteAllTextAsync(savePath, content);
+            var existing = await db.BlogPosts.FirstOrDefaultAsync(p => p.Slug == parsed.Slug);
+            if (existing is not null)
+            {
+                existing.Title = parsed.Title;
+                existing.Lead = parsed.Lead;
+                existing.IsPublished = parsed.IsPublished;
+                existing.PublishedAt = parsed.PublishedAt;
+                existing.Author = parsed.Author;
+                existing.Excerpt = parsed.Excerpt;
+                existing.OpenGraphImage = parsed.OpenGraphImage;
+                existing.TagsJson = parsed.TagsJson;
+                existing.MarkdownContent = content;
+            }
+            else
+            {
+                parsed.MarkdownContent = content;
+                db.BlogPosts.Add(parsed);
+            }
+
+            await db.SaveChangesAsync();
 
             return Results.Ok(new { file.FileName });
         })
@@ -65,6 +84,26 @@ public static class ApiExtensions
         })
         .RequireAuthorization()
         .DisableAntiforgery();
+
+        app.MapGet("/api/images/{fileName}", (string fileName, ImageSevice imageSevice) =>
+        {
+            var filePath = imageSevice.GetImagePath(fileName);
+
+            if (!File.Exists(filePath))
+                return Results.NotFound();
+
+            var ext = Path.GetExtension(fileName).ToLowerInvariant();
+            var contentType = ext switch
+            {
+                ".jpg" or ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                ".gif" => "image/gif",
+                ".webp" => "image/webp",
+                _ => "application/octet-stream"
+            };
+
+            return Results.File(filePath, contentType);
+        });
 
         return app;
     }

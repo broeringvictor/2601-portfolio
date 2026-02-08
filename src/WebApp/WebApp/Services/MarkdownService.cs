@@ -1,6 +1,8 @@
 using System.Text.Json;
 using Markdig;
 using Markdig.Syntax;
+using Microsoft.EntityFrameworkCore;
+using WebApp.Data;
 using WebApp.Entities;
 
 namespace WebApp.Services;
@@ -8,13 +10,12 @@ namespace WebApp.Services;
 public class MarkdownService
 {
     private readonly MarkdownPipeline _pipeline;
-    private readonly IWebHostEnvironment _env;
+    private readonly ApplicationDbContext _db;
     private const string MetaFence = "meta";
-    private const string PostsDirectory = "Asserts/Markdown";
 
-    public MarkdownService(IWebHostEnvironment env)
+    public MarkdownService(ApplicationDbContext db)
     {
-        _env = env;
+        _db = db;
         _pipeline = new MarkdownPipelineBuilder()
             .UseAdvancedExtensions()
             .Build();
@@ -22,45 +23,27 @@ public class MarkdownService
 
     public async Task<BlogPost?> GetPostBySlugAsync(string slug)
     {
-        var postsPath = Path.Combine(_env.WebRootPath, PostsDirectory);
+        var post = await _db.BlogPosts.AsNoTracking()
+            .FirstOrDefaultAsync(p => p.Slug == slug);
 
-        if (!Directory.Exists(postsPath))
+        if (post is null)
             return null;
 
-        var files = Directory.GetFiles(postsPath, "*.md");
-
-        foreach (var file in files)
-        {
-            var text = await File.ReadAllTextAsync(file);
-            var post = ParsePost(text);
-
-            if (post.Slug == slug)
-                return post;
-        }
-
-        return null;
+        FillHtmlContent(post);
+        return post;
     }
 
     public async Task<List<BlogPost>> GetAllPostsAsync()
     {
-        var postsPath = Path.Combine(_env.WebRootPath, PostsDirectory);
+        var posts = await _db.BlogPosts.AsNoTracking()
+            .Where(p => p.IsPublished)
+            .OrderByDescending(p => p.PublishedAt)
+            .ToListAsync();
 
-        if (!Directory.Exists(postsPath))
-            return new List<BlogPost>();
+        foreach (var post in posts)
+            FillHtmlContent(post);
 
-        var files = Directory.GetFiles(postsPath, "*.md");
-        var posts = new List<BlogPost>();
-
-        foreach (var file in files)
-        {
-            var text = await File.ReadAllTextAsync(file);
-            var post = ParsePost(text);
-
-            if (post.IsPublished)
-                posts.Add(post);
-        }
-
-        return posts.OrderByDescending(p => p.PublishedAt).ToList();
+        return posts;
     }
 
     public BlogPost ParsePost(string postText)
@@ -85,6 +68,8 @@ public class MarkdownService
         if (post == null)
             throw new InvalidOperationException("Erro ao deserializar metadados");
 
+        post.MarkdownContent = postText;
+
         markDoc.Remove(postMetadata);
 
         using var writer = new StringWriter();
@@ -94,5 +79,28 @@ public class MarkdownService
         post.HtmlContent = writer.ToString().Replace("<img ", "<img loading=\"lazy\" ");
 
         return post;
+    }
+
+    private void FillHtmlContent(BlogPost post)
+    {
+        if (string.IsNullOrEmpty(post.MarkdownContent))
+            return;
+
+        var markDoc = Markdown.Parse(post.MarkdownContent, _pipeline);
+
+        var postMetadata = markDoc
+            .OfType<FencedCodeBlock>()
+            .FirstOrDefault(x =>
+                x.Arguments is not null &&
+                x.Arguments.Contains(MetaFence));
+
+        if (postMetadata != null)
+            markDoc.Remove(postMetadata);
+
+        using var writer = new StringWriter();
+        var renderer = new Markdig.Renderers.HtmlRenderer(writer);
+        _pipeline.Setup(renderer);
+        renderer.Render(markDoc);
+        post.HtmlContent = writer.ToString().Replace("<img ", "<img loading=\"lazy\" ");
     }
 }

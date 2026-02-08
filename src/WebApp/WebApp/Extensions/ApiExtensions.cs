@@ -19,9 +19,10 @@ public static class ApiExtensions
             using var reader = new StreamReader(file.OpenReadStream());
             var content = await reader.ReadToEndAsync();
 
-            var match = Regex.Match(content, @"```json\s+meta\s*\n([\s\S]*?)```");
-            if (!match.Success)
-                return Results.BadRequest("The file must contain a ```json meta``` block with post metadata.");
+            var hasJsonMeta = Regex.IsMatch(content, @"```json\s+meta\s*\n([\s\S]*?)```");
+            var hasYamlMeta = Regex.IsMatch(content, @"^---\s*\r?\n[\s\S]*?\r?\n---");
+            if (!hasJsonMeta && !hasYamlMeta)
+                return Results.BadRequest("The file must contain a ```json meta``` block or YAML front matter (---) with post metadata.");
 
             BlogPost parsed;
             try

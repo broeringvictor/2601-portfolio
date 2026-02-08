@@ -46,8 +46,20 @@ public static class InfrastructureExtensions
                     Email = adminEmail,
                     EmailConfirmed = true
                 };
-                await userManager.CreateAsync(admin, adminPassword);
+                var result = await userManager.CreateAsync(admin, adminPassword);
+                if (result.Succeeded)
+                {
+                    app.Logger.LogInformation("Admin user {Email} created successfully", adminEmail);
+                }
+                else 
+                {
+                    app.Logger.LogError("Failed to create admin user: {Errors}", string.Join(", ", result.Errors.Select(e => e.Description)));
+                }
             }
+        }
+        else
+        {
+            app.Logger.LogWarning("Admin seeding skipped: AdminSeed:Email or AdminSeed:Password not configured");
         }
     }
 }

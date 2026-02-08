@@ -1,9 +1,12 @@
 using System.Text.Json;
 using Markdig;
+using Markdig.Extensions.Yaml;
 using Markdig.Syntax;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
 using WebApp.Entities;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace WebApp.Services;
 
@@ -50,27 +53,48 @@ public class MarkdownService
     {
         var markDoc = Markdown.Parse(postText, _pipeline);
 
-        var postMetadata = markDoc
+        // Try to find JSON meta block
+        var jsonMetadata = markDoc
             .OfType<FencedCodeBlock>()
             .FirstOrDefault(x =>
                 x.Arguments is not null &&
                 x.Arguments.Contains(MetaFence));
 
-        if (postMetadata == null)
-            throw new InvalidOperationException("Metadados não encontrados no post");
+        // Try to find YAML front matter
+        var yamlMetadata = markDoc
+            .OfType<YamlFrontMatterBlock>()
+            .FirstOrDefault();
 
-        var metaContent = postMetadata.Lines.ToString();
-        var post = JsonSerializer.Deserialize<BlogPost>(metaContent, new JsonSerializerOptions
+        if (jsonMetadata == null && yamlMetadata == null)
+            throw new InvalidOperationException("Metadados não encontrados no post. Use ```json meta ou YAML front matter (---).");
+
+        BlogPost? post = null;
+
+        if (jsonMetadata != null)
         {
-            PropertyNameCaseInsensitive = true
-        });
+            var metaContent = jsonMetadata.Lines.ToString();
+            post = JsonSerializer.Deserialize<BlogPost>(metaContent, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+            markDoc.Remove(jsonMetadata);
+        }
+        else if (yamlMetadata != null)
+        {
+            var yamlContent = yamlMetadata.Lines.ToString();
+            var deserializer = new DeserializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .IgnoreUnmatchedProperties()
+                .Build();
+            
+            post = deserializer.Deserialize<BlogPost>(yamlContent);
+            markDoc.Remove(yamlMetadata);
+        }
 
         if (post == null)
             throw new InvalidOperationException("Erro ao deserializar metadados");
 
         post.MarkdownContent = postText;
-
-        markDoc.Remove(postMetadata);
 
         using var writer = new StringWriter();
         var renderer = new Markdig.Renderers.HtmlRenderer(writer);
@@ -88,14 +112,21 @@ public class MarkdownService
 
         var markDoc = Markdown.Parse(post.MarkdownContent, _pipeline);
 
-        var postMetadata = markDoc
+        var jsonMetadata = markDoc
             .OfType<FencedCodeBlock>()
             .FirstOrDefault(x =>
                 x.Arguments is not null &&
                 x.Arguments.Contains(MetaFence));
 
-        if (postMetadata != null)
-            markDoc.Remove(postMetadata);
+        var yamlMetadata = markDoc
+            .OfType<YamlFrontMatterBlock>()
+            .FirstOrDefault();
+
+        if (jsonMetadata != null)
+            markDoc.Remove(jsonMetadata);
+        
+        if (yamlMetadata != null)
+            markDoc.Remove(yamlMetadata);
 
         using var writer = new StringWriter();
         var renderer = new Markdig.Renderers.HtmlRenderer(writer);

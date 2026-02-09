@@ -1,4 +1,4 @@
-@page "/Account/Manage"
+@page "/account"
 
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Identity
@@ -50,7 +50,7 @@
         user = await UserManager.GetUserAsync(HttpContext.User);
         if (user is null)
         {
-            RedirectManager.RedirectTo("Account/Login");
+            RedirectManager.RedirectTo("account/login");
             return;
         }
 
@@ -64,7 +64,7 @@
     {
         if (user is null)
         {
-            RedirectManager.RedirectTo("Account/Login");
+            RedirectManager.RedirectTo("account/login");
             return;
         }
 

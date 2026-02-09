@@ -10,23 +10,17 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace WebApp.Services;
 
-public class MarkdownService
+public class MarkdownService(ApplicationDbContext db)
 {
-    private readonly MarkdownPipeline _pipeline;
-    private readonly ApplicationDbContext _db;
-    private const string MetaFence = "meta";
+    private readonly MarkdownPipeline _pipeline = new MarkdownPipelineBuilder()
+        .UseAdvancedExtensions()
+        .Build();
 
-    public MarkdownService(ApplicationDbContext db)
-    {
-        _db = db;
-        _pipeline = new MarkdownPipelineBuilder()
-            .UseAdvancedExtensions()
-            .Build();
-    }
+    private const string MetaFence = "meta";
 
     public async Task<BlogPost?> GetPostBySlugAsync(string slug)
     {
-        var post = await _db.BlogPosts.AsNoTracking()
+        var post = await db.BlogPosts.AsNoTracking()
             .FirstOrDefaultAsync(p => p.Slug == slug);
 
         if (post is null)
@@ -38,7 +32,7 @@ public class MarkdownService
 
     public async Task<List<BlogPost>> GetAllPostsAsync()
     {
-        var posts = await _db.BlogPosts.AsNoTracking()
+        var posts = await db.BlogPosts.AsNoTracking()
             .Where(p => p.IsPublished)
             .OrderByDescending(p => p.PublishedAt)
             .ToListAsync();
@@ -48,6 +42,28 @@ public class MarkdownService
 
         return posts;
     }
+    
+    public async Task<List<BlogPost>> GetAllPostsTitlesAsync()
+    {
+        var posts = await db.BlogPosts.AsNoTracking()
+            .OrderByDescending(p => p.PublishedAt)
+            .ToListAsync();
+
+        return posts;
+    }
+
+    public async Task<bool> DeletePostByIdAsync(int id)
+    {
+        var post = await db.BlogPosts.FindAsync(id);
+        if (post is null)
+            return false;
+
+        db.BlogPosts.Remove(post);
+        await db.SaveChangesAsync();
+        return true;
+    }
+
+
 
     public BlogPost ParsePost(string postText)
     {

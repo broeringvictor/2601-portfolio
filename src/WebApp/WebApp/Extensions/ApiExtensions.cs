@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
 using WebApp.Entities;
@@ -11,6 +12,10 @@ public static class ApiExtensions
 {
     public static WebApplication MapApi(this WebApplication app)
     {
+        
+        
+        
+        
         app.MapPost("/api/blog/upload", async (IFormFile file, ApplicationDbContext db, MarkdownService markdownService) =>
         {
             if (Path.GetExtension(file.FileName) != ".md")
@@ -106,6 +111,22 @@ public static class ApiExtensions
             return Results.File(filePath, contentType);
         });
 
+        app.MapDelete("/api/blog/{id}", (int id, ApplicationDbContext db) =>
+            {
+                var post = db.BlogPosts.Find(id)
+                           ?? throw new InvalidOperationException("Post não encontrado.");
+
+                db.BlogPosts.Remove(post);
+                db.SaveChanges();
+
+                return Results.Ok();
+
+            })
+            .RequireAuthorization();
+            
+
         return app;
     }
+
+    
 }

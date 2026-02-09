@@ -35,7 +35,7 @@ public class ImageSevice
 
     public async Task UploadImageAsync(Stream imageStream, string fileName)
     {
-        if (imageStream == null) throw new ArgumentNullException(nameof(imageStream));
+        ArgumentNullException.ThrowIfNull(imageStream);
         if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentException("fileName não pode ser vazio.", nameof(fileName));
 
         if (!Directory.Exists(_imageDirectory))
@@ -45,10 +45,8 @@ public class ImageSevice
 
         var filePath = Path.Combine(_imageDirectory, fileName);
 
-        using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
-        {
-            await imageStream.CopyToAsync(fileStream).ConfigureAwait(false);
-            await fileStream.FlushAsync().ConfigureAwait(false);
-        }
+        await using var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true);
+        await imageStream.CopyToAsync(fileStream).ConfigureAwait(false);
+        await fileStream.FlushAsync().ConfigureAwait(false);
     }
 }

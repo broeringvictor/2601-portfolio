@@ -2,7 +2,7 @@
                border-b border-slate-200 dark:border-slate-800">
     <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
-            <a href="" class="flex items-baseline gap-1.5">
+            <a href="" class="flex items-baseline gap-1.5 outline-none">
                 <span class="text-base font-semibold text-slate-950 dark:text-white">Victor Broering</span>
                 <span class="text-sm font-medium text-slate-400 dark:text-slate-500">dev.</span>
             </a>
@@ -22,7 +22,7 @@
 
                 <AuthorizeView>
                     <Authorized>
-                        <NavLink href="Account/Manage"
+                        <NavLink href="account/manage"
                                  class="text-sm font-medium text-slate-600 hover:text-primary-600
                                         dark:text-slate-400 dark:hover:text-primary-400 transition-colors">
                             @context.User.Identity?.Name
@@ -91,7 +91,7 @@
 
             <AuthorizeView>
                 <Authorized>
-                    <a href="Account/Manage" class="block px-3 py-2 rounded-md text-sm font-medium
+                    <a href="account/manage" class="block px-3 py-2 rounded-md text-sm font-medium
                                                     text-slate-700 hover:bg-slate-100 dark:text-slate-300
                                                     dark:hover:bg-slate-800 transition-colors">
                         @context.User.Identity?.Name

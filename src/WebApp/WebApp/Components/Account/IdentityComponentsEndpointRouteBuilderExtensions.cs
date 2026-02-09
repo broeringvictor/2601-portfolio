@@ -11,9 +11,9 @@ namespace Microsoft.AspNetCore.Routing
         {
             ArgumentNullException.ThrowIfNull(endpoints);
 
-            var accountGroup = endpoints.MapGroup("/Account");
+            var accountGroup = endpoints.MapGroup("/account");
 
-            accountGroup.MapPost("/Logout", async (
+            accountGroup.MapPost("/logout", async (
                 ClaimsPrincipal user,
                 [FromServices] SignInManager<ApplicationUser> signInManager,
                 [FromForm] string returnUrl) =>

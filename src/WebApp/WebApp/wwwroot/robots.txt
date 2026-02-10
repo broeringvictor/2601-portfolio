@@ -5,4 +5,4 @@ Disallow: /api/
 Disallow: /Error
 Disallow: /_framework/
 
-Sitemap: https://victorbroering.dev/sitemap.xml
+Sitemap: https://victorbroering.azurewebsites.net/sitemap.xml

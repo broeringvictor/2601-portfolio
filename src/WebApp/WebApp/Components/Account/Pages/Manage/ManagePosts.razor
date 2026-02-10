@@ -70,24 +70,6 @@ else
     </div>
 </div>
 
-<script>
-    function openDeleteModal(id, title) {
-        document.getElementById('delete-post-id').value = id;
-        document.getElementById('delete-post-title').textContent = title;
-        var modal = document.getElementById('delete-modal');
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
-    function closeDeleteModal() {
-        var modal = document.getElementById('delete-modal');
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-    }
-    document.getElementById('delete-modal')?.addEventListener('click', function(e) {
-        if (e.target === this) closeDeleteModal();
-    });
-</script>
-
 @code {
     private List<BlogPost>? posts;
 

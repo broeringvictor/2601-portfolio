@@ -18,6 +18,12 @@
   --font-family-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
 
+/* Remove focus outline from headings focused by Blazor enhanced navigation */
+h1:focus, h2:focus, h3:focus, h4:focus,
+h1:focus-visible, h2:focus-visible, h3:focus-visible, h4:focus-visible {
+  outline: none;
+}
+
 /* NavLink active state */
 nav a.active {
   color: var(--color-primary-600);

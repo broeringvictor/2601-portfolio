@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -123,7 +124,47 @@ public static class ApiExtensions
 
             })
             .RequireAuthorization();
-            
+
+        app.MapGet("/sitemap.xml", async (HttpContext context, ApplicationDbContext db) =>
+        {
+            var baseUrl = $"{context.Request.Scheme}://{context.Request.Host}";
+
+            var posts = await db.BlogPosts
+                .Where(p => p.IsPublished)
+                .OrderByDescending(p => p.PublishedAt)
+                .Select(p => new { p.Slug, p.PublishedAt })
+                .ToListAsync();
+
+            var sb = new StringBuilder();
+            sb.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            sb.AppendLine("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
+
+            sb.AppendLine("  <url>");
+            sb.AppendLine($"    <loc>{baseUrl}/</loc>");
+            sb.AppendLine("    <changefreq>monthly</changefreq>");
+            sb.AppendLine("    <priority>1.0</priority>");
+            sb.AppendLine("  </url>");
+
+            sb.AppendLine("  <url>");
+            sb.AppendLine($"    <loc>{baseUrl}/blog</loc>");
+            sb.AppendLine("    <changefreq>weekly</changefreq>");
+            sb.AppendLine("    <priority>0.8</priority>");
+            sb.AppendLine("  </url>");
+
+            foreach (var post in posts)
+            {
+                sb.AppendLine("  <url>");
+                sb.AppendLine($"    <loc>{baseUrl}/post/{post.Slug}</loc>");
+                sb.AppendLine($"    <lastmod>{post.PublishedAt:yyyy-MM-dd}</lastmod>");
+                sb.AppendLine("    <changefreq>monthly</changefreq>");
+                sb.AppendLine("    <priority>0.6</priority>");
+                sb.AppendLine("  </url>");
+            }
+
+            sb.AppendLine("</urlset>");
+
+            return Results.Text(sb.ToString(), "application/xml", Encoding.UTF8);
+        });
 
         return app;
     }

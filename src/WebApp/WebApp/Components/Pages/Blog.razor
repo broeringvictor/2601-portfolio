@@ -2,8 +2,22 @@
 @using WebApp.Entities
 @using WebApp.Services
 @inject MarkdownService MarkdownService
+@inject NavigationManager NavigationManager
 
-<PageTitle>Blog</PageTitle>
+<PageTitle>Blog - Victor Broering</PageTitle>
+<HeadContent>
+    <meta name="description" content="Artigos sobre desenvolvimento backend, .NET, Python, engenharia de dados e boas práticas de programação por Victor Broering." />
+    <link rel="canonical" href="@NavigationManager.Uri" />
+    <meta property="og:title" content="Blog - Victor Broering" />
+    <meta property="og:description" content="Artigos sobre desenvolvimento backend, .NET, Python, engenharia de dados e boas práticas de programação." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="@NavigationManager.Uri" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="Victor Broering" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Blog - Victor Broering" />
+    <meta name="twitter:description" content="Artigos sobre desenvolvimento backend, .NET, Python, engenharia de dados e boas práticas de programação." />
+</HeadContent>
 
 <div class="mx-auto max-w-[75ch] px-4 py-8">
     <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Blog</h1>

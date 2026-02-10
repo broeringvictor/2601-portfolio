@@ -1,7 +1,57 @@
 @page "/"
 @using WebApp.Components.Shared
+@inject NavigationManager NavigationManager
 
-<PageTitle>Victor Broering</PageTitle>
+<PageTitle>Victor Broering - Desenvolvedor Backend | .NET, Python, C#</PageTitle>
+<HeadContent>
+    <meta name="description" content="Portfólio de Victor Broering, Desenvolvedor Backend especializado em .NET, C# e Python. Experiência em microsserviços, APIs RESTful, AWS e engenharia de dados." />
+    <link rel="canonical" href="@NavigationManager.Uri" />
+    <meta property="og:title" content="Victor Broering - Desenvolvedor Backend" />
+    <meta property="og:description" content="Portfólio de Victor Broering, Desenvolvedor Backend especializado em .NET, C# e Python. Experiência em microsserviços, APIs RESTful, AWS e engenharia de dados." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="@NavigationManager.Uri" />
+    <meta property="og:image" content="@($"{NavigationManager.BaseUri}Asserts/victor-broering-foto.jpg")" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="Victor Broering" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Victor Broering - Desenvolvedor Backend" />
+    <meta name="twitter:description" content="Desenvolvedor Backend especializado em .NET, C# e Python. Microsserviços, APIs RESTful e engenharia de dados." />
+    <meta name="twitter:image" content="@($"{NavigationManager.BaseUri}Asserts/victor-broering-foto.jpg")" />
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "Person",
+        "name": "Victor Broering",
+        "url": "@NavigationManager.BaseUri",
+        "image": "@($"{NavigationManager.BaseUri}Asserts/victor-broering-foto.jpg")",
+        "jobTitle": "Desenvolvedor Backend",
+        "worksFor": {
+            "@@type": "Organization",
+            "name": "Tributo Devido",
+            "url": "https://tributodevido.com.br/"
+        },
+        "address": {
+            "@@type": "PostalAddress",
+            "addressLocality": "Palhoça",
+            "addressRegion": "SC",
+            "addressCountry": "BR"
+        },
+        "sameAs": [
+            "https://github.com/broeringvictor",
+            "https://linkedin.com/in/victorbroering"
+        ],
+        "knowsAbout": [".NET", "C#", "Python", "AWS", "Microservices", "Data Engineering"]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "WebSite",
+        "name": "Victor Broering",
+        "url": "@NavigationManager.BaseUri"
+    }
+    </script>
+</HeadContent>
 
 <ProfileHero />
 <ExperienceTimeline Items="Experiences" />

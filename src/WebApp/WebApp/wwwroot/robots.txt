@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /account/
+Disallow: /api/
+Disallow: /Error
+Disallow: /_framework/
+
+Sitemap: https://victorbroering.dev/sitemap.xml

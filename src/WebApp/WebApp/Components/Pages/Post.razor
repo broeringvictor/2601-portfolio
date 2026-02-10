@@ -3,6 +3,7 @@
 @using WebApp.Entities
 @using WebApp.Services
 @inject MarkdownService MarkdownService
+@inject NavigationManager NavigationManager
 
 @if (_post == null)
 {
@@ -21,16 +22,67 @@ else
     <HeadContent>
         <meta name="description" content="@_post.Excerpt" />
         <meta name="author" content="@_post.Author" />
+        <link rel="canonical" href="@NavigationManager.Uri" />
         <meta property="og:title" content="@_post.Title" />
         <meta property="og:description" content="@_post.Excerpt" />
         <meta property="og:type" content="article" />
+        <meta property="og:url" content="@NavigationManager.Uri" />
+        <meta property="og:locale" content="pt_BR" />
+        <meta property="og:site_name" content="Victor Broering" />
+        <meta property="article:published_time" content="@_post.PublishedAt.ToString("yyyy-MM-ddTHH:mm:ssZ")" />
+        <meta property="article:author" content="@_post.Author" />
         @if (!string.IsNullOrEmpty(_post.OpenGraphImage))
         {
             <meta property="og:image" content="@_post.OpenGraphImage" />
+            <meta name="twitter:image" content="@_post.OpenGraphImage" />
         }
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="@_post.Title" />
         <meta name="twitter:description" content="@_post.Excerpt" />
+        <script type="application/ld+json">
+        {
+            "@@context": "https://schema.org",
+            "@@type": "BlogPosting",
+            "headline": "@_post.Title",
+            "description": "@_post.Excerpt",
+            "author": {
+                "@@type": "Person",
+                "name": "@_post.Author"
+            },
+            "datePublished": "@_post.PublishedAt.ToString("yyyy-MM-ddTHH:mm:ssZ")",
+            "url": "@NavigationManager.Uri",
+            "publisher": {
+                "@@type": "Person",
+                "name": "Victor Broering"
+            }@if (!string.IsNullOrEmpty(_post.OpenGraphImage)){@(new MarkupString($",\n            \"image\": \"{_post.OpenGraphImage}\""))}
+        }
+        </script>
+        <script type="application/ld+json">
+        {
+            "@@context": "https://schema.org",
+            "@@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "@NavigationManager.BaseUri"
+                },
+                {
+                    "@@type": "ListItem",
+                    "position": 2,
+                    "name": "Blog",
+                    "item": "@($"{NavigationManager.BaseUri}blog")"
+                },
+                {
+                    "@@type": "ListItem",
+                    "position": 3,
+                    "name": "@_post.Title",
+                    "item": "@NavigationManager.Uri"
+                }
+            ]
+        }
+        </script>
     </HeadContent>
 
     <article class="mx-auto max-w-[75ch] px-4 py-8">

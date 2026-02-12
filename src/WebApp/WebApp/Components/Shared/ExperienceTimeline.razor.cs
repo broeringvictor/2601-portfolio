@@ -19,7 +19,7 @@ public partial class ExperienceTimeline : ComponentBase
                 "<strong class=\"font-medium text-slate-900 dark:text-slate-200\">Manutenção de sistemas e engenharia de dados:</strong> Sustento sistema legado de processamento híbrido, utilizando Pandas para cálculos em arquivos de texto (TXT) e AWS Athena para transformações em formato colunar (Parquet) sobre estruturas NoSQL. Aplico conhecimento em Direito Tributário na tradução de regras fiscais para código, contribuindo para a recuperação de R$ 2 bilhões em créditos (2025).",
                 "<strong class=\"font-medium text-slate-900 dark:text-slate-200\">Interface técnico-jurídica:</strong> Integro a experiência em Direito Tributário ao desenvolvimento de software, atuando na tradução de regras de negócio para a equipe técnica e alinhando os requisitos fiscais à engenharia de dados e automação."
             ],
-            Technologies = ["Python", "Pandas", "AWS", "RabbitMQ", "Microservices", "Event-Driven", "Data Engineering", "Parquet", "Athena"]
+            Technologies = ["Python", "C# .NET", "Pandas", "AWS (Athena, S3)", "RabbitMQ", "Docker", "Kubernetes", "Microservices", "Event-Driven Architecture", "SQL", "NoSQL", "Parquet", "ETL", "Data Engineering", "Performance Optimization"]
         },
         new()
         {

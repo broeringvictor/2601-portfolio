@@ -54,57 +54,10 @@
 </HeadContent>
 
 <ProfileHero />
-<ExperienceTimeline Items="Experiences" />
+<ExperienceTimeline />
 <ProjectsGrid Items="Projects" />
 
 @code {
-    private static readonly List<ExperienceTimeline.ExperienceItem> Experiences =
-    [
-        new()
-        {
-            Period = "Set/2025 – Presente",
-            Role = "Desenvolvedor Backend",
-            Company = "Tributo Devido",
-            Url = "https://tributodevido.com.br/",
-            Descriptions =
-            [
-                "Na Tributo Devido, eu atuo como Desenvolvedor Back-end focado em criação e manutenção de micro serviços para o tratamento de processos fiscais complexos, conformidade fiscal e otimização de performance para grandes volumes de dados tributários.",
-                "Implemento arquiteturas orientadas a eventos (Event-Driven), utilizando RabbitMQ para o consumo e gestão assíncrona de eventos de teses tributárias, garantindo a resiliência do pipeline em pods S3 na AWS.",
-                "Atuo em Data Engineering, o que inclui a conversão de dataset complexos (como o SPED Tributário) para o formato colunar Parquet, com o objetivo de otimizar a performance em ferramentas de análise e no Athena, da AWS.",
-                "Utilização da biblioteca Pandas para desenvolver lógicas de negócio e realizar transformações de dados, garantindo a normalização precisa para gerar alterações de débitos e créditos. Em 2025, esta abordagem resultou na recuperação de quase 2 bilhões em créditos.",
-                "Aplico minha experiência anterior em Direito Tributário no diálogo com especialistas da área e com a equipe de automação, auxiliando o time de desenvolvimento na compreensão das regras de negócio fiscal e da engenharia de dados."
-            ],
-            Technologies = ["Python", "Pandas", "AWS", "RabbitMQ", "Microservices", "Event-Driven", "Data Engineering", "Parquet", "Athena"]
-        },
-        new()
-        {
-            Period = "Nov/2020 – Jul/2025",
-            Role = "Desenvolvedor Full Stack e Advogado",
-            Company = "Victor Broering Advocacia",
-            Url = "https://www.victorbroering.adv.br",
-            Descriptions =
-            [
-                "Liderei a iniciativa de desenvolvimento interno, criando um microssistema de web scraping que gerou uma economia de R$11.000 anuais em licenças de software jurídico.",
-                "Desenvolvi e implantei uma solução full stack em .NET que automatizou 100% do processo de geração de contratos, eliminando tarefas manuais e permitindo a delegação segura da precificação.",
-                "Integrei sistemas legados que não aceitavam API utilizando Selenium e SQL Server para garantir a consistência e a centralização dos dados da operação."
-            ],
-            Technologies = [".NET", "C#", "ASP.NET", "Blazor", "Selenium", "SQL Server", "Python"]
-        },
-        new()
-        {
-            Period = "01/2020 – 11/2020",
-            Role = "Estagiário de Direito",
-            Company = "Henrique Franceschetto Advocacia",
-            Url = "https://www.henriquef.com.br",
-            Descriptions =
-            [
-                "Otimizei processos internos da equipe ao assumir responsabilidades-chave em um ambiente de metodologia ágil.",
-                "Aumentei a velocidade e precisão na identificação de créditos tributários ao automatizar a análise de bi-tributação com Power BI."
-            ],
-            Technologies = ["Power BI", "Metodologia Ágil"]
-        }
-    ];
-
     private static readonly List<ProjectsGrid.ProjectItem> Projects =
     [
         new()

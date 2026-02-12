@@ -1,4 +1,4 @@
-@* Reusable SSR-only timeline component for professional experience *@
+﻿@* Reusable SSR-only timeline component for professional experience *@
 
 <section class="mx-auto max-w-[75ch] px-4 py-16">
     <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
@@ -7,7 +7,7 @@
     <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">@Subtitle</p>
 
     <ol class="relative mt-10 border-s border-slate-200 dark:border-slate-800">
-        @foreach (var item in Items)
+        @foreach (var item in Experiences)
         {
             <li class="mb-12 ms-6 last:mb-0">
                 @* Timeline dot *@
@@ -43,7 +43,7 @@
                     <div class="mt-3 space-y-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
                         @foreach (var desc in item.Descriptions)
                         {
-                            <p>@desc</p>
+                            <p>@((MarkupString)desc)</p>
                         }
                     </div>
                 }
@@ -73,9 +73,6 @@
     [Parameter]
     public string Subtitle { get; set; } = "Trajetória e contribuições.";
 
-    [Parameter]
-    public List<ExperienceItem> Items { get; set; } = [];
-
     public sealed class ExperienceItem
     {
         public string Period { get; set; } = "";
@@ -86,3 +83,4 @@
         public List<string> Technologies { get; set; } = [];
     }
 }
+

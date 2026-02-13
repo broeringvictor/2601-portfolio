@@ -29,24 +29,25 @@ public partial class ExperienceTimeline : ComponentBase
             Url = "https://www.victorbroering.adv.br",
             Descriptions =
             [
-                "Liderei a iniciativa de desenvolvimento interno, criando um microssistema de web scraping que gerou uma economia de R$11.000 anuais em licenças de software jurídico.",
-                "Desenvolvi e implantei uma solução full stack em .NET que automatizou 100% do processo de geração de contratos, eliminando tarefas manuais e permitindo a delegação segura da precificação.",
-                "Integrei sistemas legados que não aceitavam API utilizando Selenium e SQL Server para garantir a consistência e a centralização dos dados da operação."
+                "<strong class=\"font-medium text-slate-900 dark:text-slate-200\">Atuação contenciosa e gestão de litígios:</strong> Conduzi o ciclo de vida completo de mais de 100 demandas jurídicas, atuando diretamente na estruturação e resolução de processos de divórcio e ações de alimentos.",
+                "<strong class=\"font-medium text-slate-900 dark:text-slate-200\">Desenvolvimento full stack e eficiência operacional:</strong> Projetei e implantei uma solução em .NET para a automação integral (100%) da esteira de geração de contratos. O sistema eliminou intervenções manuais repetitivas e viabilizou a delegação estruturada e segura das regras de precificação.",
+                "<strong class=\"font-medium text-slate-900 dark:text-slate-200\">Integração de sistemas legados e consistência de dados:</strong> Implementei uma arquitetura de integração para sistemas sem suporte a APIs, utilizando automação de interface com Selenium e persistência relacional em SQL Server. A engenharia garantiu a centralização, interoperabilidade e consistência dos dados de toda a operação."
             ],
-            Technologies = [".NET", "C#", "ASP.NET", "Blazor", "Selenium", "SQL Server", "Python"]
+            Technologies = [".NET", "C#", "ASP.NET", "Blazor", "Selenium", "SQL Server", "Python", "D. das Famílias", "D. das Sucessões", "D. Civil"]
         },
         new()
         {
             Period = "01/2020 – 11/2020",
             Role = "Estagiário de Direito",
-            Company = "Henrique Franceschetto Advocacia",
+            Company = "Franceschetto Tributária",
             Url = "https://www.henriquef.com.br",
             Descriptions =
             [
-                "Otimizei processos internos da equipe ao assumir responsabilidades-chave em um ambiente de metodologia ágil.",
-                "Aumentei a velocidade e precisão na identificação de créditos tributários ao automatizar a análise de bi-tributação com Power BI."
+                "<strong class=\"font-medium text-slate-900 dark:text-slate-200\">Atuação técnica em contencioso tributário:</strong> Participei ativamente da elaboração e execução de teses tributárias de alta complexidade, colaborando diretamente com liderança jurídica de referência estadual (SC) na condução de litígios estratégicos e estruturação de defesas fiscais.",
+                "<strong class=\"font-medium text-slate-900 dark:text-slate-200\">Otimização de processos e gestão ágil:</strong> Atuei no aprimoramento de fluxos operacionais internos, assumindo a execução de responsabilidades críticas e garantindo a eficiência das rotinas da equipe em um ambiente orientado por metodologias ágeis.",
+                "<strong class=\"font-medium text-slate-900 dark:text-slate-200\">Automação analítica e auditoria de créditos:</strong> Projetei e implementei rotinas de análise de dados utilizando Power BI para o mapeamento e cálculo de bitributação. A automação maximizou a precisão e reduziu o tempo de processamento na identificação e validação de créditos tributários."
             ],
-            Technologies = ["Power BI", "Metodologia Ágil"]
+            Technologies = ["Power BI", "Metodologia Ágil", "D. Tributário", "Teses Tributárias"]
         }
     ];
 
